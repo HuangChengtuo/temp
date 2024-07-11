@@ -1,0 +1,17 @@
+{
+  "name": "gis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite --host"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cesium": "^1.119.0",
+    "mapbox-gl": "^3.5.1",
+    "maplibre-gl": "^4.5.0",
+    "vite": "^5.3.3"
+  }
+}
