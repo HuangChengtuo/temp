@@ -40,30 +40,57 @@ const map = new mapboxgl.Map({
 });
 
 let index = 0
-const marker = new mapboxgl.Marker().setLngLat(data.geometry.coordinates[index] as any);
 
 map.on('click', e => {
   console.log(e.lngLat)
 })
 
-function startRun(unix?: number) {
-  const arr = data.geometry.coordinates
-  index = index === arr.length - 1 ? 0 : index + 1
-  marker.setLngLat(arr[index] as any)
-  requestAnimationFrame(startRun)
-}
+const point = {
+  'type': 'FeatureCollection',
+  'features': [
+    {
+      'type': 'Feature',
+      'properties': {},
+      'geometry': {
+        'type': 'Point',
+        'coordinates': [120.155023, 30.248279]
+      }
+    }
+  ]
+};
 
 map.on('load', () => {
   map.addLayer({
     id: 'track',
     type: 'line',
-    source: { type: 'geojson', data },
+    source: { type: 'geojson', data: data as any },
     paint: {
       'line-color': '#ff0000',
       'line-width': 5,
       'line-opacity': 0.75
     }
   });
-  marker.addTo(map)
+  map.addSource('point', {
+    'type': 'geojson',
+    'data': point as any
+  });
+
+  map.addLayer({
+    'id': 'point',
+    'source': 'point',
+    'type': 'circle',
+    paint: {
+      "circle-stroke-width": 2,
+      'circle-color': '#ffffff'
+    }
+  });
   startRun()
 })
+
+function startRun(unix?: number) {
+  const arr = data.geometry.coordinates
+  index = index === arr.length - 1 ? 0 : index + 1
+  point.features[0].geometry.coordinates = arr[index]
+  map.getSource('point').setData(point);
+  requestAnimationFrame(startRun)
+}
